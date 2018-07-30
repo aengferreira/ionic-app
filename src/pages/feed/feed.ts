@@ -1,3 +1,4 @@
+import { MoovieProvider } from '../../providers/moovie/moovie';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
@@ -6,6 +7,9 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 @Component({
   selector: 'page-feed',
   templateUrl: 'feed.html',
+  providers : [
+    MoovieProvider
+  ]
 })
 export class FeedPage {
 
@@ -18,9 +22,14 @@ export class FeedPage {
     time_comment: "11h ago"
   }
 
+  public lista_filmes = new Array <any>();
+
   public nome_usuario:string = "Andressa Ferreira";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private MoovieProvider: MoovieProvider) {
   }
 
   public somaDoisNumeros (num1:number, num2:number):void{
@@ -28,7 +37,19 @@ export class FeedPage {
   }
 
   ionViewDidLoad() {
-    // this.somaDoisNumeros(5, 10);
+    this.MoovieProvider.getLatestMovies().subscribe(
+      data => {
+
+        const response = (data as any);
+        const objeto_retorno = JSON.parse(response._body);
+
+        this.lista_filmes = objeto_retorno.results;
+
+        console.log(objeto_retorno);
+      }, error => {
+        console.log(error);
+      }
+    );
   }
 
 }
